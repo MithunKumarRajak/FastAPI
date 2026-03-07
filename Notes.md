@@ -55,7 +55,8 @@ pydantic mai data type dena hota hai..
 ```
 
 ### CRUD
-put for entire update 
+put for entire update
+
 patch for partical update
 
 ### CRUD

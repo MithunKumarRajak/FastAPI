@@ -58,8 +58,6 @@ def get_post(id: int):
 
 
 
-
-
 # post method with validation using pydantic model
 @app.post('/right')
 def right(new_post: validation):
