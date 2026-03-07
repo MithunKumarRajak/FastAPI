@@ -41,7 +41,7 @@ post method mai agar postman se body se kuch data aaye to 'params' use kare use 
 
 from fastapi.params import Body
 
-* in dict mai string formating ke liye double quotes use kare  like " "
+- in dict mai string formating ke liye double quotes use kare  like " "
 
 ```
 body se kuch bhi bheja jaa shakta hai So we have to do vadiation in fastapi 
@@ -55,6 +55,7 @@ pydantic mai data type dena hota hai..
 ```
 
 ### CRUD
+
 put for entire update
 
 patch for partical update
@@ -63,5 +64,10 @@ patch for partical update
 
 ![CRUD](image.png "CRUD diagram")
 
-* in the fastapi path operations --> order matters, top to down path find karta hai
-* parameter pass karte time data type ka dhyan de
+- in the fastapi path operations --> order matters, top to down path find karta hai
+- parameter pass karte time data type ka dhyan de
+
+```
+package are simply folder with some special file like __init__.py and other related file
+
+```
