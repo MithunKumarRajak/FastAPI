@@ -48,5 +48,19 @@ body se kuch bhi bheja jaa shakta hai So we have to do vadiation in fastapi
 
 So 'pydantic ' comes in for data validation 
 
-pydantic se BaseModwl import kare forr this
+pydantic se BaseModel import kare for this
 
+pydantic mai data type dena hota hai..
+
+```
+
+### CRUD
+put for entire update 
+patch for partical update
+
+### CRUD
+
+![CRUD](image.png "CRUD diagram")
+
+* in the fastapi path operations --> order matters, top to down path find karta hai
+* parameter pass karte time data type ka dhyan de
