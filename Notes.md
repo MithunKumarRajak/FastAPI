@@ -41,10 +41,12 @@ post method mai agar postman se body se kuch data aaye to 'params' use kare use 
 
 from fastapi.params import Body
 
+* in dict mai string formating ke liye double quotes use kare  like " "
 
-- in dict mai string formating ke liye double quotes use kare  like " "
+```
+body se kuch bhi bheja jaa shakta hai So we have to do vadiation in fastapi 
 
+So 'pydantic ' comes in for data validation 
 
-
-
+pydantic se BaseModwl import kare forr this
 
