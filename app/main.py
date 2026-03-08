@@ -3,10 +3,30 @@ from fastapi.params import Body
 from pydantic import BaseModel
 from typing import Optional
 from random import randrange
+# for database connection
+import psycopg2
+from psycopg2.extras import RealDictCursor
+import time
 
-
+#
 app = FastAPI()
 
+
+# For the database connection
+while True:
+    try:
+        conn = psycopg2.connect(host='localhost', database='fastapi', user='postgres',
+                                password='123456', cursor_factory=RealDictCursor)
+        cursor = conn.cursor()
+        print("Database connection was successful!")
+        break
+    except Exception as error:
+        print("Database connection failed!")
+        print("Error:", error)
+        time.sleep(3)
+
+
+# root endpoint
 
 @app.get("/")
 def read_root():
@@ -23,7 +43,7 @@ class validation(BaseModel):
 
 #
 
-
+# class for post method data validation using pydantic model
 class Post(BaseModel):
     title: str
     content: str
@@ -39,15 +59,16 @@ my_posts = [{"title": "Hello World", "content": "This is my first post", "id": 1
             ]
 
 
-@app.post('/posts')
+@app.post('/post')
 def create_post(post: Post):
     print(post)
-    post_dict = post.dict() # converts the pydantic model to a dictionary use model_dump
-    post_dict['id'] =randrange(0, 100000)
+    post_dict = post.dict()  # converts the pydantic model to a dictionary use model_dump
+    post_dict['id'] = randrange(0, 100000)
     my_posts.append(post_dict)
     return {"Post Created!": my_posts}
 
-# 
+#
+
 
 @app.get('/posts/{id}')
 def get_post(id: int):
@@ -55,7 +76,6 @@ def get_post(id: int):
         if post['id'] == id:
             return {"Post Found!": post}
     return {"Error": "Post Not Found!"}
-
 
 
 # post method with validation using pydantic model
@@ -70,3 +90,12 @@ def right(new_post: validation):
 def vote_post(payload: dict = Body(...)):
     print(payload)
     return {'Vote Posted!': f"{payload['hello']} : {payload['reply']}"}
+
+
+# now getting data of posts from database
+@app.get('/posts')
+def get_posts():
+    cursor.execute("SELECT * FROM posts")
+    posts = cursor.fetchall()
+    print(posts)
+    return {"Data from database": posts}
