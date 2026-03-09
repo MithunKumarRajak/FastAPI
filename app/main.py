@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status, HTTPException
 from fastapi.params import Body
 from pydantic import BaseModel
 from typing import Optional
@@ -44,6 +44,8 @@ class validation(BaseModel):
 #
 
 # class for post method data validation using pydantic model
+
+
 class Post(BaseModel):
     title: str
     content: str
@@ -70,7 +72,7 @@ def create_post(post: Post):
 #
 
 
-@app.get('/posts/{id}')
+@app.get('/post/{id}')
 def get_post(id: int):
     for post in my_posts:
         if post['id'] == id:
@@ -99,3 +101,50 @@ def get_posts():
     posts = cursor.fetchall()
     print(posts)
     return {"Data from database": posts}
+
+
+# now creating a post in database
+@app.post('/posts', status_code=status.HTTP_201_CREATED)
+def create_post(post: Post):
+    cursor.execute("INSERT INTO posts (title, content, published) VALUES (%s, %s, %s) RETURNING *",
+                   (post.title, post.content, post.published))
+    new_post = cursor.fetchone()
+    conn.commit()  # to save the changes in database
+    return {"Data from database": new_post}
+
+
+# now getting a post by id from database
+@app.get('/posts/{id}')
+def get_post(id: int):
+    cursor.execute("SELECT * FROM posts WHERE id = %s", (str(id),)) # to prevent SQL injection attack we use parameterized query and pass the id as a
+    post = cursor.fetchone()
+    print(post)
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+    return {"Data from database": post}
+
+# now deleting a post by id from database
+@app.delete('/posts/{id}', status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int):
+    cursor.execute("DELETE FROM posts WHERE id = %s RETURNING *", (str(id),))
+    deleted_post = cursor.fetchone()
+    print(deleted_post)
+    conn.commit()
+    if not deleted_post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+    return {"Data from database": deleted_post}
+
+# now updating a post by id from database
+@app.put('/posts/{id}')
+def update_post(id: int, post: Post):
+    cursor.execute("UPDATE posts SET title = %s, content = %s, published = %s WHERE id = %s RETURNING *",
+                   (post.title, post.content, post.published, str(id)))
+    updated_post = cursor.fetchone()
+    print(updated_post)
+    conn.commit()
+    if not updated_post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+    return {"Data from database": updated_post}
